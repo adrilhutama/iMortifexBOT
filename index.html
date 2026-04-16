@@ -813,15 +813,15 @@ window.addEventListener("load", async () => {
 //  API HELPER
 // ════════════════════════════════════════════════════════════════
 async function api(action, params = {}) {
-  const body = { action, token: SECRET_TOKEN, user_id: appState.wallet.user_id, ...params };
-  const res  = await fetch(GAS_URL, {
-    method : "POST",
-    headers: { "Content-Type": "application/json" },
-    body   : JSON.stringify(body),
+  const allParams = { action, token: SECRET_TOKEN, user_id: appState.wallet.user_id, ...params };
+  const qs  = new URLSearchParams(allParams).toString();
+  const res = await fetch(GAS_URL + "?" + qs, {
+    method: "GET",
   });
   if (!res.ok) throw new Error("HTTP " + res.status);
   return res.json();
 }
+
 
 // ════════════════════════════════════════════════════════════════
 //  DASHBOARD
