@@ -754,6 +754,7 @@
 
 <script>
 // ── CONFIG ──
+const API_URL = 'https://script.google.com/macros/s/AKfycbxo7uWt5Ce6bi9Gz0vSeKt7OCDpOX7TYKicshHoU6SZEoaJvUl4L4Dcc9E-nQrb8UVV/exec';
 const COIN_RATE = 1000;
 const ICON_MAP = {
   'iCloud': '☁️', 'Bypass': '🔓', 'Region': '🌍',
@@ -846,6 +847,7 @@ let selectedPayment = null;
 let tgUser = null;
 
 // ── INIT ──
+// ── INIT ──
 window.addEventListener('load', () => {
   try {
     const tg = window.Telegram?.WebApp;
@@ -859,13 +861,36 @@ window.addEventListener('load', () => {
   } catch(e) {}
   
   initUserData();
-  renderWallet();
-  renderPromo();
-  renderFeaturedProducts();
-  renderRecentOrders();
-  renderAllProducts();
-  renderOrders();
-  renderProfile();
+  
+  // Tampilkan loading di layar saat mengambil data
+  document.getElementById('allProducts').innerHTML = '<div class="empty-state">Memuat data dari server...</div>';
+  
+  // Mengambil data dari Google Sheets
+  fetch(API_URL)
+    .then(response => response.json())
+    .then(data => {
+      // Timpa data DB lokal dengan data dari Spreadsheet
+      if(data.products && data.products.length > 0) {
+        DB.products = data.products;
+      }
+      if(data.config && data.config.length > 0) {
+        // Ambil baris pertama dari sheet CONFIG
+        DB.config = data.config[0]; 
+      }
+      
+      // Render ulang tampilan dengan data asli
+      renderWallet();
+      renderPromo();
+      renderFeaturedProducts();
+      renderRecentOrders();
+      renderAllProducts();
+      renderOrders();
+      renderProfile();
+    })
+    .catch(error => {
+      console.error('Gagal mengambil data:', error);
+      showToast('⚠️ Gagal terhubung ke server', 'error');
+    });
 });
 
 function initUserData() {
@@ -1066,11 +1091,18 @@ function confirmOrder() {
   if (DB.wallet.saldo < total) {
     showToast('❌ Saldo tidak cukup', 'error'); return;
   }
+
+  // Ubah tombol jadi "Memproses..." agar tidak di-klik 2x
+  const btn = document.getElementById('btnConfirmOrder');
+  btn.disabled = true;
+  btn.textContent = 'Memproses...';
   
-  // Simulate order creation
   const now = new Date();
   const ordId = 'ORD' + now.toISOString().replace(/\D/g, '').slice(2, 14);
-  const newOrder = {
+  
+  // Siapkan data yang akan dikirim ke Gudang (Sheets)
+  const payload = {
+    action: 'tambahOrder',
     order_id: ordId,
     waktu: formatWIB(now),
     user_id: DB.wallet.user_id,
@@ -1079,18 +1111,40 @@ function confirmOrder() {
     imei: imei,
     status: 'Pending'
   };
-  
-  DB.orders.unshift(newOrder);
-  DB.wallet.saldo -= total;
-  
-  closeModal('orderModal');
-  renderWallet();
-  renderRecentOrders();
-  renderOrders();
-  renderProfile();
-  
-  showToast('✅ Order berhasil! ID: ' + ordId, 'success');
-  setTimeout(() => showOrderDetail(ordId), 800);
+
+  // Kirim data via POST ke Google Apps Script
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(response => response.json())
+  .then(result => {
+    if(result.status === "success") {
+      // Jika sukses di server, baru update tampilan lokal
+      DB.orders.unshift(payload);
+      DB.wallet.saldo -= total;
+      
+      closeModal('orderModal');
+      renderWallet();
+      renderRecentOrders();
+      renderOrders();
+      renderProfile();
+      
+      showToast('✅ Order berhasil! ID: ' + ordId, 'success');
+      setTimeout(() => showOrderDetail(ordId), 800);
+    } else {
+      showToast('❌ Gagal: ' + result.message, 'error');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showToast('❌ Terjadi kesalahan jaringan', 'error');
+  })
+  .finally(() => {
+    // Kembalikan tombol seperti semula
+    btn.disabled = false;
+    btn.textContent = 'Konfirmasi Order';
+  });
 }
 
 // ── TOPUP MODAL ──
