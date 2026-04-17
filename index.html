@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>iMortifex</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ════════════════════════════════════ PAGE: HOME ══════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="logo-wrap">
+      <img class="logo-img" id="logoImg" src="images/logo-dark.jpeg" alt="iMortifex">
+      <div class="logo-text">
+        <span class="logo-i">i</span><span class="logo-M">M</span><span class="logo-rest">ortifex</span>
+        <small class="logo-sub">another dimension</small>
+      </div>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Ganti tema" style="margin-left:auto">☀️</button>
+    </div>
+    <div class="wallet-card">
+      <div class="wl-label">💎 Saldo iCoin</div>
+      <div class="wl-amount"><span id="homeBalance">—</span><small>iCoin</small></div>
+      <div class="wl-rp" id="homeBalanceRp">≈ Rp —</div>
+      <div class="wl-actions">
+        <button class="wl-btn primary" onclick="openTopupModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7-7 7 7"/></svg>
+          Top Up
+        </button>
+        <button class="wl-btn" onclick="showPage('shop')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Pesan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="promoBar" style="display:none">
+    <div class="promo-bar"><span id="promoMsg">Promo aktif!</span></div>
+  </div>
+  <div id="fakeBar" style="display:none">
+    <div class="fake-bar" id="fakeMsg">⚡ Loading...</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hd">
+      <div class="sec-title">🛍️ Layanan Unggulan</div>
+      <button class="sec-link" onclick="showPage('shop')">Lihat Semua</button>
+    </div>
+    <div id="featuredList"><div class="shimmer sk-card"></div><div class="shimmer sk-card"></div></div>
+  </div>
+
+  <div class="sec" style="margin-top:18px;padding-bottom:20px">
+    <div class="sec-hd">
+      <div class="sec-title">📋 Order Terbaru</div>
+      <button class="sec-link" onclick="showPage('orders')">Semua</button>
+    </div>
+    <div id="recentOrdersList"><div class="shimmer sk-card2"></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ PAGE: SHOP ══════════════════════ -->
+<div id="page-shop" class="page">
+  <div class="ph">
+    <div class="ph-title">🛍️ Layanan</div>
+    <div class="ph-sub">Pilih layanan iPhone terbaik</div>
+  </div>
+  <div class="sec" style="padding-bottom:20px" id="allProductsList">
+    <div class="shimmer sk-card" style="margin-top:8px"></div>
+    <div class="shimmer sk-card"></div>
+    <div class="shimmer sk-card"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ PAGE: ORDERS ════════════════════ -->
+<div id="page-orders" class="page">
+  <div class="ph">
+    <div class="ph-title">📋 Riwayat Order</div>
+    <div class="ph-sub" id="ordersSubtitle">Memuat...</div>
+  </div>
+  <div class="sec" style="padding-bottom:20px">
+    <div class="filter-row" style="padding:14px 0 0;overflow-x:auto;display:flex;gap:6px;">
+      <button class="seg-btn active" onclick="filterOrders('all',this)">Semua</button>
+      <button class="seg-btn" onclick="filterOrders('Pending',this)">Pending</button>
+      <button class="seg-btn" onclick="filterOrders('Process',this)">Process</button>
+      <button class="seg-btn" onclick="filterOrders('Done',this)">Done</button>
+      <button class="seg-btn" onclick="filterOrders('Failed',this)">Failed</button>
+    </div>
+    <div id="ordersList" style="margin-top:12px"><div class="shimmer sk-card2"></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ PAGE: PROFILE ═══════════════════ -->
+<div id="page-profile" class="page">
+  <div class="profile-hd">
+    <div class="avatar" id="profileAvatar">?</div>
+    <div>
+      <div class="pf-name" id="profileName">—</div>
+      <div class="pf-id" id="profileId">ID: —</div>
+      <div class="pf-badge">✦ Member iMortifex</div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="pfSaldo">—</div><div class="stat-lbl">iCoin</div></div>
+    <div class="stat-card"><div class="stat-val" id="pfOrders">—</div><div class="stat-lbl">Total Order</div></div>
+    <div class="stat-card"><div class="stat-val" id="pfDone">—</div><div class="stat-lbl">Selesai</div></div>
+  </div>
+  <div class="sep"></div>
+  <div class="menu-list">
+    <div class="menu-item" onclick="openTopupModal()">
+      <div class="menu-icon" style="background:rgba(201,146,42,.1)">💰</div>
+      <div class="menu-txt"><div class="menu-title">Top Up iCoin</div><div class="menu-desc">Isi saldo untuk mulai order</div></div>
+      <svg class="menu-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="menu-item" onclick="showPage('orders')">
+      <div class="menu-icon" style="background:rgba(52,152,219,.1)">📋</div>
+      <div class="menu-txt"><div class="menu-title">Riwayat Order</div><div class="menu-desc">Lihat semua order kamu</div></div>
+      <svg class="menu-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="menu-item" onclick="showInfo('syarat')">
+      <div class="menu-icon" style="background:rgba(46,204,113,.1)">📑</div>
+      <div class="menu-txt"><div class="menu-title">Syarat & Ketentuan</div><div class="menu-desc">Baca sebelum order</div></div>
+      <svg class="menu-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="menu-item" onclick="showInfo('garansi')">
+      <div class="menu-icon" style="background:rgba(243,156,18,.1)">🛡️</div>
+      <div class="menu-txt"><div class="menu-title">Info Garansi</div><div class="menu-desc">Repeat, Claim & Refund</div></div>
+      <svg class="menu-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="menu-item" onclick="contactAdmin()">
+      <div class="menu-icon" style="background:rgba(193,39,45,.1)">💬</div>
+      <div class="menu-txt"><div class="menu-title">Hubungi Admin</div><div class="menu-desc" id="adminContactDesc">@Caz0rla · 08.00–22.00 WIB</div></div>
+      <svg class="menu-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="menu-item" id="adminMenuBtn" style="display:none" onclick="showPage('admin')">
+      <div class="menu-icon" style="background:rgba(201,146,42,.12)">⚙️</div>
+      <div class="menu-txt"><div class="menu-title">Admin Panel</div><div class="menu-desc">Kelola bot & data</div></div>
+      <svg class="menu-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  </div>
+  <div style="text-align:center;padding:20px 16px;font-size:11px;color:var(--txt3)">iMortifex · another dimension · v2.1</div>
+</div>
+
+<!-- ════════════════════════════════════ PAGE: ADMIN ═════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="ph">
+    <div class="ph-row">
+      <div>
+        <div class="ph-title">⚙️ Admin Panel</div>
+        <div class="ph-sub">iMortifex Management</div>
+      </div>
+      <button class="btn-icon" onclick="showPage('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+    </div>
+  </div>
+  <div style="padding:14px 16px 0">
+    <div class="admin-nav-tabs">
+      <button class="atab active" onclick="switchAdminTab('dashboard',this)">Dashboard</button>
+      <button class="atab" onclick="switchAdminTab('topup',this)">Top Up<span id="pendingBadge" class="nav-badge" style="display:none">0</span></button>
+      <button class="atab" onclick="switchAdminTab('orders',this)">Orders</button>
+      <button class="atab" onclick="switchAdminTab('products',this)">Produk</button>
+      <button class="atab" onclick="switchAdminTab('users',this)">Users</button>
+      <button class="atab" onclick="switchAdminTab('vouchers',this)">Voucher</button>
+      <button class="atab" onclick="switchAdminTab('settings',this)">Setting</button>
+    </div>
+  </div>
+
+  <div id="adm-dashboard" class="adm-tab" style="padding:0 16px">
+    <div class="stat-row" id="admStats"><div class="shimmer" style="height:70px"></div><div class="shimmer" style="height:70px"></div><div class="shimmer" style="height:70px"></div><div class="shimmer" style="height:70px"></div></div>
+    <div class="sec-title mb8">📋 Order Terbaru</div>
+    <div id="admRecentOrders"><div class="shimmer sk-card2"></div></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <div id="adm-topup" class="adm-tab" style="display:none;padding:0 16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="sec-title">💳 Top Up Pending</div>
+      <button class="btn-sm" onclick="loadAdminTopup()">Refresh</button>
+    </div>
+    <div id="admTopupList"><div class="shimmer sk-card2"></div></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <div id="adm-orders" class="adm-tab" style="display:none;padding:0 16px">
+    <div class="seg mb8" style="margin-top:4px">
+      <button class="seg-btn active" onclick="admFilterOrders('all',this)">Semua</button>
+      <button class="seg-btn" onclick="admFilterOrders('pending',this)">Pending</button>
+      <button class="seg-btn" onclick="admFilterOrders('process',this)">Process</button>
+      <button class="seg-btn" onclick="admFilterOrders('done',this)">Done</button>
+      <button class="seg-btn" onclick="admFilterOrders('failed',this)">Failed</button>
+    </div>
+    <div class="search-wrap">
+      <input class="fi" id="admOrderSearch" placeholder="Cari Order ID / IMEI / nama..." oninput="admSearchOrders(this.value)">
+    </div>
+    <div id="admOrdersList"><div class="shimmer sk-card2"></div></div>
+    <div id="admOrdersPager" style="display:flex;gap:8px;margin-top:12px;justify-content:center"></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <div id="adm-products" class="adm-tab" style="display:none;padding:0 16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="sec-title">📦 Kelola Produk</div>
+    </div>
+    <div id="admProductsList"><div class="shimmer sk-card"></div><div class="shimmer sk-card"></div></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <div id="adm-users" class="adm-tab" style="display:none;padding:0 16px">
+    <div class="search-wrap" style="margin-top:4px">
+      <input class="fi" id="admUserSearch" placeholder="Cari user ID / nama..." oninput="admSearchUsers(this.value)">
+    </div>
+    <div id="admUsersList"><div class="shimmer sk-card2"></div></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <div id="adm-vouchers" class="adm-tab" style="display:none;padding:0 16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="sec-title">🎟️ Voucher</div>
+      <button class="btn-sm" onclick="openCreateVoucherModal()">+ Buat</button>
+    </div>
+    <div id="admVouchersList"><div class="shimmer sk-card"></div></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <div id="adm-settings" class="adm-tab" style="display:none;padding:0 16px">
+    <div id="admSettingsContent"><div class="shimmer" style="height:300px;margin-top:8px"></div></div>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="nav">
+  <button class="nav-item active" onclick="showPage('home')" id="nav-home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Beranda<div class="nav-dot"></div>
+  </button>
+  <button class="nav-item" onclick="showPage('shop')" id="nav-shop">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    Layanan<div class="nav-dot"></div>
+  </button>
+  <button class="nav-item" onclick="showPage('orders')" id="nav-orders">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Order<div class="nav-dot"></div>
+  </button>
+  <button class="nav-item" onclick="showPage('profile')" id="nav-profile">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profil<div class="nav-dot"></div>
+  </button>
+</nav>
+
+<!-- ═══════ MODAL: ORDER ═══════ -->
+<div class="m-overlay" id="modalOrder">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-hd"><div class="m-title" id="orderModalTitle">Pesan Layanan</div></div>
+    <div class="m-body">
+      <div class="info-box" id="orderProductInfo">Pilih layanan terlebih dahulu.</div>
+      <div class="fg">
+        <label class="fl">IMEI DEVICE (15 DIGIT)</label>
+        <input class="fi" id="imeiInput" type="tel" placeholder="Contoh: 123456789012345" maxlength="15">
+        <div class="small-note">💡 Dial *#06# untuk cek IMEI · Hanya angka, tepat 15 digit</div>
+      </div>
+      <div class="fg">
+        <label class="fl">KODE VOUCHER (OPSIONAL)</label>
+        <div class="fi-row">
+          <input class="fi" id="voucherInput" type="text" placeholder="Kode voucher..." style="text-transform:uppercase">
+          <button class="btn-sm" onclick="checkVoucher()" style="flex-shrink:0;padding:0 14px">Pakai</button>
+        </div>
+        <div class="voucher-result" id="voucherResult"></div>
+      </div>
+      <div class="price-box">
+        <div class="price-row"><span>Harga</span><span id="orderPriceBase">— iCoin</span></div>
+        <div class="price-row" id="orderDiscRow" style="display:none"><span>Diskon Voucher</span><span id="orderDiscAmt" style="color:var(--ok)">— iCoin</span></div>
+        <div class="price-row total"><span style="font-weight:700">Total Bayar</span><span id="orderPriceTotal">— iCoin</span></div>
+        <div class="price-row" style="border-top:none;margin-top:3px"><span>Saldo Kamu</span><span id="orderSaldo">— iCoin</span></div>
+      </div>
+      <div class="warn-box" id="orderInsufficientWarn" style="display:none">⚠️ Saldo tidak cukup. <button class="btn-sm" onclick="closeModal('modalOrder');openTopupModal()" style="margin-left:6px">Top Up</button></div>
+    </div>
+    <div class="m-footer">
+      <button class="btn-p" id="btnConfirmOrder" onclick="confirmOrder()">Konfirmasi Order</button>
+      <button class="btn-s" onclick="closeModal('modalOrder')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: TOPUP ═══════ -->
+<div class="m-overlay" id="modalTopup">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-hd"><div class="m-title">💳 Top Up iCoin</div></div>
+    <div class="m-body">
+      <div class="warn-box">📸 Setelah transfer, kirim bukti ke admin via Telegram. Saldo diproses <strong>max 15 menit</strong>.</div>
+      <div class="fg">
+        <label class="fl">PILIH NOMINAL</label>
+        <div class="chip-grid">
+          <div class="chip" onclick="selectTopupChip(25000,this)"><div>25</div><div>Rp 25rb</div></div>
+          <div class="chip" onclick="selectTopupChip(50000,this)"><div>50</div><div>Rp 50rb</div></div>
+          <div class="chip" onclick="selectTopupChip(100000,this)"><div>100</div><div>Rp 100rb</div></div>
+          <div class="chip" onclick="selectTopupChip(200000,this)"><div>200</div><div>Rp 200rb</div></div>
+          <div class="chip" onclick="selectTopupChip(500000,this)"><div>500</div><div>Rp 500rb</div></div>
+          <div class="chip" onclick="selectTopupChip(1000000,this)"><div>1.000</div><div>Rp 1jt</div></div>
+        </div>
+        <input class="fi" id="topupCustom" type="number" placeholder="Atau masukkan nominal Rupiah lain..." min="10000" step="1000">
+        <div class="small-note">Minimal Rp 10.000 · 1 iCoin = Rp 1.000</div>
+      </div>
+      <div class="fg">
+        <label class="fl">METODE PEMBAYARAN</label>
+        <div class="pay-list" id="paymentList">
+          <div class="pay-item" onclick="selectPayment(this,'QRIS')">
+            <div class="pay-icon" style="background:rgba(201,146,42,.1)">🔲</div>
+            <div><div class="pay-name">QRIS</div><div class="pay-sub">Semua e-wallet & m-banking</div></div>
+            <div class="pay-check"><svg class="pay-chk-svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+          <div class="pay-item" id="payBCA" onclick="selectPayment(this,'BCA')">
+            <div class="pay-icon" style="background:rgba(52,152,219,.1)">🏦</div>
+            <div><div class="pay-name">BCA</div><div class="pay-sub" id="payBCAInfo">a/n iMortifex</div></div>
+            <div class="pay-check"><svg class="pay-chk-svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+          <div class="pay-item" id="payMandiri" onclick="selectPayment(this,'Mandiri')">
+            <div class="pay-icon" style="background:rgba(243,156,18,.1)">🏦</div>
+            <div><div class="pay-name">Mandiri</div><div class="pay-sub" id="payMandiriInfo">a/n iMortifex</div></div>
+            <div class="pay-check"><svg class="pay-chk-svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+        </div>
+        <!-- QRIS Image (tampil hanya saat QRIS dipilih) -->
+        <div class="qris-wrap" id="qrisWrap">
+          <img src="images/qris.jpeg" alt="QRIS iMortifex">
+          <p>Scan QRIS di atas · Nominal bebas sesuai pilihan kamu<br>Semua e-wallet & m-banking didukung</p>
+        </div>
+        <div id="payRekInfo" class="small-note" style="margin-top:4px"></div>
+      </div>
+      <div class="price-box">
+        <div class="price-row total"><span style="font-weight:700">Total Transfer</span><span id="topupTotalAmt" style="color:var(--gold)">Rp —</span></div>
+        <div class="price-row" style="border-top:none;margin-top:3px"><span>Akan mendapat</span><span id="topupCoinAmt">— iCoin</span></div>
+      </div>
+    </div>
+    <div class="m-footer">
+      <button class="btn-p" onclick="submitTopup()">Lanjut Konfirmasi</button>
+      <button class="btn-s" onclick="closeModal('modalTopup')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: ORDER DETAIL ═══════ -->
+<div class="m-overlay" id="modalOrderDetail">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-hd"><div class="m-title">Detail Order</div></div>
+    <div class="m-body" id="orderDetailBody"></div>
+    <div class="m-footer"><button class="btn-s" onclick="closeModal('modalOrderDetail')">Tutup</button></div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: INFO ═══════ -->
+<div class="m-overlay" id="modalInfo">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-hd"><div class="m-title" id="infoTitle">Info</div></div>
+    <div class="m-body"><div id="infoBody" style="font-size:13px;color:var(--txt2);line-height:1.85;white-space:pre-line"></div></div>
+    <div class="m-footer"><button class="btn-p" onclick="closeModal('modalInfo')">Tutup</button></div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: ADMIN STATUS UPDATE ═══════ -->
+<div class="m-overlay" id="modalUpdateStatus">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-hd"><div class="m-title">Update Status Order</div></div>
+    <div class="m-body">
+      <div id="statusOrderInfo" style="margin-bottom:14px"></div>
+      <div class="fg">
+        <label class="fl">STATUS BARU</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="btn-s" onclick="setOrderStatus('Pending')" style="color:var(--warn);border-color:rgba(230,126,34,.3)">🕐 Pending</button>
+          <button class="btn-s" onclick="setOrderStatus('Process')" style="color:var(--info);border-color:rgba(41,128,185,.3)">⚙️ Process</button>
+          <button class="btn-s btn-ok"     onclick="setOrderStatus('Done')">✅ Done</button>
+          <button class="btn-s btn-danger" onclick="setOrderStatus('Failed')">❌ Failed</button>
+        </div>
+      </div>
+    </div>
+    <div class="m-footer"><button class="btn-s" onclick="closeModal('modalUpdateStatus')">Batal</button></div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: ADJUST SALDO ═══════ -->
+<div class="m-overlay" id="modalAdjSaldo">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-hd"><div class="m-title">💰 Adjust Saldo</div></div>
+    <div class="m-body">
+      <div id="adjUserInfo" class="info-box" style="margin-bottom:14px"></div>
+      <div class="fg">
+        <label class="fl">JUMLAH iCOIN (+ tambah, - kurang)</label>
+        <input class="fi" id="adjDeltaInput" type="number" placeholder="Contoh: 100 atau -50">
+        <div class="small-note">Saldo tidak bisa kurang dari 0.</div>
+      </div>
+    </div>
+    <div class="m-footer">
+      <button class="btn-p" onclick="submitAdjSaldo()">Simpan Perubahan</button>
+      <button class="btn-s" onclick="closeModal('modalAdjSaldo')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: CREATE VOUCHER ═══════ -->
+<div class="m-overlay" id="modalCreateVoucher">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-hd"><div class="m-title">➕ Buat Voucher Baru</div></div>
+    <div class="m-body">
+      <div class="fg"><label class="fl">KODE VOUCHER</label><input class="fi" id="vcCode" placeholder="Contoh: PROMO20" style="text-transform:uppercase"></div>
+      <div class="fg"><label class="fl">TIPE</label>
+        <select class="fi" id="vcType">
+          <option value="promo">🎯 Promo Terbatas</option>
+          <option value="newmember">🎁 New Member</option>
+          <option value="reseller">💼 Reseller</option>
+          <option value="custom">⭐ Spesial</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label class="fl">DISKON (%)</label><input class="fi" id="vcDisc" type="number" placeholder="10" min="1" max="100"></div>
+        <div class="fg"><label class="fl">MAKS GUNA (0=∞)</label><input class="fi" id="vcMax" type="number" placeholder="0" min="0"></div>
+      </div>
+      <div class="fg"><label class="fl">KHUSUS USER ID (kosong = semua)</label><input class="fi" id="vcAllowed" placeholder="123456,789012 (pisah koma)"></div>
+      <div class="fg"><label class="fl">DESKRIPSI</label><input class="fi" id="vcDesc" placeholder="Diskon 10% member baru"></div>
+    </div>
+    <div class="m-footer">
+      <button class="btn-p" onclick="submitCreateVoucher()">Buat Voucher</button>
+      <button class="btn-s" onclick="closeModal('modalCreateVoucher')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST & LOADING -->
+<div class="toast" id="toast"></div>
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spin"></div>
+  <p id="loadingText">Memproses...</p>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
