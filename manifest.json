@@ -1,0 +1,21 @@
+{
+  "name": "iMortifex",
+  "short_name": "iMortifex",
+  "description": "Aplikasi iMortifex another dimension",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#0A0A0A",
+  "icons": [
+    {
+      "src": "images/logo-dark.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "images/logo-dark.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

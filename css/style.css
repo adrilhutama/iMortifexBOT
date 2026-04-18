@@ -209,6 +209,8 @@ html,body{
 .b-done{background:rgba(39,174,96,.15);color:#27AE60;}
 .b-pend{background:rgba(230,126,34,.15);color:#E67E22;}
 .b-fail{background:rgba(231,76,60,.15);color:#E74C3C;}
+.b-repeat{background:rgba(155,89,182,.15);color:#9b59b6;}
+.b-refund{background:rgba(231,76,60,.15);color:#E74C3C;}
 
 /* ════════════════════════════════════════════════════════════════
    ORDER ITEM

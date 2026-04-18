@@ -7,6 +7,9 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="apple-touch-icon" href="images/logo-dark.jpeg">
 </head>
 <body>
 
@@ -87,7 +90,9 @@
       <button class="seg-btn" onclick="filterOrders('Pending',this)">Pending</button>
       <button class="seg-btn" onclick="filterOrders('Process',this)">Process</button>
       <button class="seg-btn" onclick="filterOrders('Done',this)">Done</button>
+      <button class="seg-btn" onclick="filterOrders('Repeat',this)">Repeat</button>
       <button class="seg-btn" onclick="filterOrders('Failed',this)">Failed</button>
+      <button class="seg-btn" onclick="filterOrders('Refund',this)">Refund</button>
     </div>
     <div id="ordersList" style="margin-top:12px"><div class="shimmer sk-card2"></div></div>
   </div>
@@ -186,12 +191,14 @@
   </div>
 
   <div id="adm-orders" class="adm-tab" style="display:none;padding:0 16px">
-    <div class="seg mb8" style="margin-top:4px">
+    <div class="seg mb8" style="margin-top:4px;overflow-x:auto;display:flex;gap:6px;">
       <button class="seg-btn active" onclick="admFilterOrders('all',this)">Semua</button>
       <button class="seg-btn" onclick="admFilterOrders('pending',this)">Pending</button>
       <button class="seg-btn" onclick="admFilterOrders('process',this)">Process</button>
       <button class="seg-btn" onclick="admFilterOrders('done',this)">Done</button>
+      <button class="seg-btn" onclick="admFilterOrders('repeat',this)">Repeat</button>
       <button class="seg-btn" onclick="admFilterOrders('failed',this)">Failed</button>
+      <button class="seg-btn" onclick="admFilterOrders('refund',this)">Refund</button>
     </div>
     <div class="search-wrap">
       <input class="fi" id="admOrderSearch" placeholder="Cari Order ID / IMEI / nama..." oninput="admSearchOrders(this.value)">
@@ -373,12 +380,18 @@
     <div class="m-body">
       <div id="statusOrderInfo" style="margin-bottom:14px"></div>
       <div class="fg">
+        <label class="fl">CATATAN (OPSIONAL)</label>
+        <textarea class="fi" id="adminStatusNote" rows="2" placeholder="Catatan untuk pelanggan (misal resi / alasan refund)..."></textarea>
+      </div>
+      <div class="fg">
         <label class="fl">STATUS BARU</label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <button class="btn-s" onclick="setOrderStatus('Pending')" style="color:var(--warn);border-color:rgba(230,126,34,.3)">🕐 Pending</button>
           <button class="btn-s" onclick="setOrderStatus('Process')" style="color:var(--info);border-color:rgba(41,128,185,.3)">⚙️ Process</button>
+          <button class="btn-s" onclick="setOrderStatus('Repeat')" style="color:var(--repeat, #9b59b6);border-color:rgba(155,89,182,.3)">🔁 Repeat</button>
           <button class="btn-s btn-ok"     onclick="setOrderStatus('Done')">✅ Done</button>
           <button class="btn-s btn-danger" onclick="setOrderStatus('Failed')">❌ Failed</button>
+          <button class="btn-s" onclick="setOrderStatus('Refund')" style="color:var(--danger);border-color:var(--danger)">💸 Refund</button>
         </div>
       </div>
     </div>
@@ -442,6 +455,10 @@
   <p id="loadingText">Memproses...</p>
 </div>
 
-<script src="js/app.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/user.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
